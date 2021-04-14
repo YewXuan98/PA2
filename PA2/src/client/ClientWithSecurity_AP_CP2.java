@@ -1,10 +1,12 @@
+package src.client;
+
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.net.Socket;
 
-public class ClientWithoutSecurity {
+public class ClientWithSecurity_AP_CP2 {
 
 	public static void main(String[] args) {
 
