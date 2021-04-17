@@ -1,23 +1,33 @@
 package src.server;
 
+import src.client.ca.PrivateKeyReader;
+import src.rsa.cipher.CipherGen;
+
+import javax.crypto.Cipher;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.PrivateKey;
+import java.util.Arrays;
 
-public class ServerWithSecurity_AP_CP2 {
+/**
+ * Receive nonce from client (step 1)
+ */
+
+public class ReceiveNonce {
 
 	public static void main(String[] args) {
 
     	int port = 4321;
     	if (args.length > 0) port = Integer.parseInt(args[0]);
 
-		ServerSocket welcomeSocket = null;
-		Socket connectionSocket = null;
-		DataOutputStream toClient = null;
-		DataInputStream fromClient = null;
+		ServerSocket welcomeSocket;
+		Socket connectionSocket;
+		DataOutputStream toClient;
+		DataInputStream fromClient;
 
 		FileOutputStream fileOutputStream = null;
 		BufferedOutputStream bufferedFileOutputStream = null;
@@ -38,7 +48,7 @@ public class ServerWithSecurity_AP_CP2 {
 					System.out.println("Receiving file...");
 
 					int numBytes = fromClient.readInt();
-					byte [] filename = new byte[numBytes];
+					byte[] filename = new byte[numBytes];
 					// Must use read fully!
 					// See: https://stackoverflow.com/questions/25897627/datainputstream-read-vs-datainputstream-readfully
 					fromClient.readFully(filename, 0, numBytes);
@@ -50,7 +60,7 @@ public class ServerWithSecurity_AP_CP2 {
 				} else if (packetType == 1) {
 
 					int numBytes = fromClient.readInt();
-					byte [] block = new byte[numBytes];
+					byte[] block = new byte[numBytes];
 					fromClient.readFully(block, 0, numBytes);
 
 					if (numBytes > 0)

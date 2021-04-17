@@ -6,11 +6,15 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.net.Socket;
 
-public class ClientWithSecurity_AP_CP2 {
+/**
+ * Pass nonce to server (step 1)
+ */
+
+public class PassNonce {
 
 	public static void main(String[] args) {
 
-    	String filename = "100.txt";
+    	String filename = "nonce.txt";
     	if (args.length > 0) filename = args[0];
 
     	String serverAddress = "localhost";
@@ -19,15 +23,15 @@ public class ClientWithSecurity_AP_CP2 {
     	int port = 4321;
     	if (args.length > 2) port = Integer.parseInt(args[2]);
 
-		int numBytes = 0;
+		int numBytes;
 
-		Socket clientSocket = null;
+		Socket clientSocket;
 
-        DataOutputStream toServer = null;
-        DataInputStream fromServer = null;
+        DataOutputStream toServer;
+        DataInputStream fromServer;
 
-    	FileInputStream fileInputStream = null;
-        BufferedInputStream bufferedFileInputStream = null;
+    	FileInputStream fileInputStream;
+        BufferedInputStream bufferedFileInputStream;
 
 		long timeStarted = System.nanoTime();
 
@@ -40,7 +44,7 @@ public class ClientWithSecurity_AP_CP2 {
 			toServer = new DataOutputStream(clientSocket.getOutputStream());
 			fromServer = new DataInputStream(clientSocket.getInputStream());
 
-			System.out.println("Sending file...");
+			System.out.println("Sending nonce...");
 
 			// Send the filename
 			toServer.writeInt(0);
@@ -52,7 +56,7 @@ public class ClientWithSecurity_AP_CP2 {
 			fileInputStream = new FileInputStream(filename);
 			bufferedFileInputStream = new BufferedInputStream(fileInputStream);
 
-	        byte [] fromFileBuffer = new byte[117];
+	        byte[] fromFileBuffer = new byte[117];
 
 	        // Send the file
 	        for (boolean fileEnded = false; !fileEnded;) {

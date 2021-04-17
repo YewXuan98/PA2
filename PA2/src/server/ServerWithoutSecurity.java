@@ -50,7 +50,7 @@ public class ServerWithoutSecurity {
 				} else if (packetType == 1) {
 
 					int numBytes = fromClient.readInt();
-					byte [] block = new byte[numBytes];
+					byte[] block = new byte[numBytes];
 					fromClient.readFully(block, 0, numBytes);
 
 					if (numBytes > 0)

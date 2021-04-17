@@ -36,7 +36,7 @@ public class DigitalSignatureSolution {
             System.out.printf("\nLength of %s is %d\n", file, digest.length);
 
             //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as encrypt mode, use PRIVATE key.
-            Cipher rsaCipher = digSigSoln.initCipher(DesSolution.ECB, Cipher.ENCRYPT_MODE, privateKey);
+            Cipher rsaCipher = digSigSoln.initCipher("ECB", Cipher.ENCRYPT_MODE, privateKey);
 
             //TODO: encrypt digest message
             byte[] encryptedBytesArray = desSoln.generateByte(rsaCipher, digest);
