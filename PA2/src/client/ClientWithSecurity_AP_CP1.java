@@ -4,11 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientWithSecurity_AP_CP1 {
 
 	public static void main(String[] args) {
+
 
     	String filename = "100.txt";
     	if (args.length > 0) filename = args[0];

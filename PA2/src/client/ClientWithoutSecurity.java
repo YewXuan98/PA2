@@ -6,11 +6,27 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.net.Socket;
 
+import src.io.*;
+
+// Client will generate NONCE (DONE)
+// Server encrypt nonce with private key
+// Send e-nonce to client, client will decrypt the e-nonce with the server's public key
+// Client encrypt nonce with private key resend back to server
+// Server use client's public key to decrypt the e-nonce
+
+//A method to retrieve the private and public key frm the CA
+//Parse the private key and the nonce into the getCipher method
+
+
 public class ClientWithoutSecurity {
 
 	public static void main(String[] args) {
 
-    	String filename = "100.txt";
+		for (String inp: IO.readFile()) {
+			System.out.println(inp);
+		}
+
+		String filename = "100.txt";
     	if (args.length > 0) filename = args[0];
 
     	String serverAddress = "localhost";
