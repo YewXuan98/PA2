@@ -1,13 +1,10 @@
 package src.server;
 
-import src.client.ca.PrivateKeyReader;
+import src.client.ReceiveEncryptedNonce;
+import src.keys.ca.PrivateKeyReader;
 import src.rsa.cipher.CipherGen;
 
-import javax.crypto.Cipher;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.PrivateKey;
@@ -19,11 +16,14 @@ import java.util.Arrays;
 
 public class ReceiveNonce {
 
+	private static int port = 4320;
+
 	public static void main(String[] args) {
+		if (args.length > 0) port = Integer.parseInt(args[0]);
+		establishConnection();
+	}
 
-    	int port = 4321;
-    	if (args.length > 0) port = Integer.parseInt(args[0]);
-
+	public static void establishConnection() {
 		ServerSocket welcomeSocket;
 		Socket connectionSocket;
 		DataOutputStream toClient;
@@ -53,24 +53,34 @@ public class ReceiveNonce {
 					// See: https://stackoverflow.com/questions/25897627/datainputstream-read-vs-datainputstream-readfully
 					fromClient.readFully(filename, 0, numBytes);
 
-					fileOutputStream = new FileOutputStream("recv_"+new String(filename, 0, numBytes));
+					StringBuilder newOut = new StringBuilder();
+					String out = new String(filename, 0, numBytes);
+					for (int i = 0; i < out.length(); i++) {
+						if (out.charAt(i) == '.') {
+							newOut.append("_recv");
+						}
+						newOut.append(out.charAt(i));
+					}
+
+					fileOutputStream = new FileOutputStream(String.valueOf(newOut));
 					bufferedFileOutputStream = new BufferedOutputStream(fileOutputStream);
 
-				// If the packet is for transferring a chunk of the file
-				} else if (packetType == 1) {
+					// If the packet is for transferring a chunk of the file
+				} else if (packetType == 1 && bufferedFileOutputStream != null) {
 
 					int numBytes = fromClient.readInt();
 					byte[] block = new byte[numBytes];
 					fromClient.readFully(block, 0, numBytes);
 
-					if (numBytes > 0)
-						bufferedFileOutputStream.write(block, 0, numBytes);
+					if (numBytes > 0) {
+						ReceiveNonce.encryptNonce(bufferedFileOutputStream, block, numBytes);
+					}
 
 					if (numBytes < 117) {
 						System.out.println("Closing connection...");
 
-						if (bufferedFileOutputStream != null) bufferedFileOutputStream.close();
-						if (bufferedFileOutputStream != null) fileOutputStream.close();
+						bufferedFileOutputStream.close();
+						fileOutputStream.close();
 						fromClient.close();
 						toClient.close();
 						connectionSocket.close();
@@ -79,7 +89,17 @@ public class ReceiveNonce {
 
 			}
 		} catch (Exception e) {e.printStackTrace();}
+	}
 
+	public static void encryptNonce(BufferedOutputStream stream, byte[] block, int numBytes) {
+		// TODO: encrypt with server's private key (private_key.der)
+		PrivateKey key = PrivateKeyReader.get("src/keys/private_key.der");
+		System.out.println(Arrays.toString(block));
+		try {
+			stream.write(CipherGen.encryptCipher(key, block), 0, numBytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

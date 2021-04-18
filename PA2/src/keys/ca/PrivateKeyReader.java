@@ -1,4 +1,4 @@
-package src.client.ca;
+package src.keys.ca;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

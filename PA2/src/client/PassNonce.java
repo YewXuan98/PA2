@@ -1,10 +1,8 @@
 package src.client;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.net.Socket;
+import src.nonce.NonceGen;
+import src.server.ReceiveNonce;
+import src.socket.SocketSender;
 
 /**
  * Pass nonce to server (step 1)
@@ -13,70 +11,22 @@ import java.net.Socket;
 public class PassNonce {
 
 	public static void main(String[] args) {
+		//TODO: Generate a nonce on client side and send to server
+		NonceGen.generateClientNonce();
 
-    	String filename = "nonce.txt";
-    	if (args.length > 0) filename = args[0];
+		SocketSender socketSender = new SocketSender();
 
-    	String serverAddress = "localhost";
-    	if (args.length > 1) filename = args[1];
+    	if (args.length > 0) socketSender.setFilename(args[0]);
+		String filename = socketSender.getFilename();
 
-    	int port = 4321;
-    	if (args.length > 2) port = Integer.parseInt(args[2]);
+		if (args.length > 1) socketSender.setServerAddress(args[1]);
+		String serverAddress = socketSender.getServerAddress();
 
-		int numBytes;
+		if (args.length > 2) socketSender.setPort(args[2]);
+		int port = socketSender.getPort();
 
-		Socket clientSocket;
-
-        DataOutputStream toServer;
-        DataInputStream fromServer;
-
-    	FileInputStream fileInputStream;
-        BufferedInputStream bufferedFileInputStream;
-
-		long timeStarted = System.nanoTime();
-
-		try {
-
-			System.out.println("Establishing connection to server...");
-
-			// Connect to server and get the input and output streams
-			clientSocket = new Socket(serverAddress, port);
-			toServer = new DataOutputStream(clientSocket.getOutputStream());
-			fromServer = new DataInputStream(clientSocket.getInputStream());
-
-			System.out.println("Sending nonce...");
-
-			// Send the filename
-			toServer.writeInt(0);
-			toServer.writeInt(filename.getBytes().length);
-			toServer.write(filename.getBytes());
-			//toServer.flush();
-
-			// Open the file
-			fileInputStream = new FileInputStream(filename);
-			bufferedFileInputStream = new BufferedInputStream(fileInputStream);
-
-	        byte[] fromFileBuffer = new byte[117];
-
-	        // Send the file
-	        for (boolean fileEnded = false; !fileEnded;) {
-				numBytes = bufferedFileInputStream.read(fromFileBuffer);
-				fileEnded = numBytes < 117;
-
-				toServer.writeInt(1);
-				toServer.writeInt(numBytes);
-				toServer.write(fromFileBuffer);
-				toServer.flush();
-			}
-
-	        bufferedFileInputStream.close();
-	        fileInputStream.close();
-
-			System.out.println("Closing connection...");
-
-		} catch (Exception e) {e.printStackTrace();}
-
-		long timeTaken = System.nanoTime() - timeStarted;
-		System.out.println("Program took: " + timeTaken/1000000.0 + "ms to run");
+		socketSender.sendFile(filename);
 	}
+
+
 }

@@ -1,4 +1,4 @@
-package src.client.ca;
+package src.keys.ca;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -6,7 +6,7 @@ import java.security.spec.*;
 
 public class PublicKeyReader {
 
-    private static final String PUBLIC = "./public_key.der";
+    private static final String PUBLIC = "src/keys/public_key.der";
 
     public static PublicKey get() {
         try{
