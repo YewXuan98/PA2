@@ -10,47 +10,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 
-public class DesSolution {
+public class AesSolution {
 
     public static final String
-            ENCRYPTION = "DES",
+            ENCRYPTION = "AES",
             ECB = "ECB",
-            BLOCK_SIZE = "PKCS5Padding",
-            DIRECTORY = "./EncryptionLab/",
-            SHORTTEXT = "shorttext.txt",
-            LONGTEXT = "longtext.txt";
+            BLOCK_SIZE = "PKCS5Padding";
 
-    private static final DesSolution desSoln = new DesSolution();
-
-
-    public static void main(String[] args) {
-        StringBuilder sb = initStringFromDir(SHORTTEXT);
-        StringBuilder sb2 = initStringFromDir(LONGTEXT);
-
-        desEncrypt(SHORTTEXT, sb);
-        desEncrypt(LONGTEXT, sb2);
-    }
-
-    public static StringBuilder initStringFromDir(String file) {
-        StringBuilder text = new StringBuilder();
-        String line;
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            while ((line = bufferedReader.readLine()) != null) {
-                text.append("\n").append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return text;
-    }
+    private static final AesSolution aesSoln = new AesSolution();
 
     private static void desEncrypt(String file, StringBuilder sb) {
-        SecretKey desKey = desSoln.generateSecretKey();
+        SecretKey desKey = aesSoln.generateSecretKey();
 
-        Cipher desCipher = desSoln.initCipher(ECB, Cipher.ENCRYPT_MODE, desKey);
+        Cipher desCipher = aesSoln.initCipher(Cipher.ENCRYPT_MODE, desKey);
 
-        byte[] encryptedBytesArray = desSoln.generateEncryptedByte(desCipher, sb.toString());
+        byte[] encryptedBytesArray = aesSoln.generateEncryptedByte(desCipher, sb.toString());
         if (encryptedBytesArray != null) {
             //TODO: print the length of output encrypted byte[], compare the length of file shorttext.txt and longtext.txt
             System.out.printf("Length of %s is %d\n", file, encryptedBytesArray.length);
@@ -60,13 +34,13 @@ public class DesSolution {
 
             //TODO: print the encrypted message (in base64format String format)
             System.out.println("\nEncrypted message content:");
-            System.out.println(desSoln.getBase64Format(encryptedBytesArray));
+            System.out.println(aesSoln.getBase64Format(encryptedBytesArray));
 
             //TODO: create cipher object, initialize the ciphers with the given key, choose decryption mode as DES
-            Cipher desCipher2 = desSoln.initCipher(ECB, Cipher.DECRYPT_MODE, desKey);
+            Cipher desCipher2 = aesSoln.initCipher(Cipher.DECRYPT_MODE, desKey);
 
             //TODO: do decryption, by calling method Cipher.doFinal().
-            byte[] decryptedBytesArray = desSoln.generateByte(desCipher2, encryptedBytesArray);
+            byte[] decryptedBytesArray = aesSoln.generateByte(desCipher2, encryptedBytesArray);
             if (decryptedBytesArray != null) {
                 //TODO: do format conversion. Convert the decrypted byte[] to String, using "String a = new String(byte_array);"
                 String decryptedString = new String(decryptedBytesArray);
@@ -79,13 +53,13 @@ public class DesSolution {
     }
 
     //TODO: do format conversion. Turn the encrypted byte[] format into base64format String using Base64
-    public String getBase64Format(byte[] byteArray) {
+    public static String getBase64Format(byte[] byteArray) {
         //TODO: do format conversion. Turn the encrypted byte[] format into base64format String using Base64
         return Base64.getEncoder().encodeToString(byteArray);
     }
 
     //TODO: generate secret key using DES algorithm
-    public SecretKey generateSecretKey() {
+    public static SecretKey generateSecretKey() {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance(ENCRYPTION);
             return keyGen.generateKey();
@@ -96,15 +70,15 @@ public class DesSolution {
     }
 
     //TODO: create cipher object, initialize the ciphers with the given key, choose encryption mode as DES
-    public Cipher initCipher(String type, int mode, SecretKey key) {
-        return DigitalSignatureSolution.getCipher(type, mode, key, ENCRYPTION, BLOCK_SIZE);
+    public static Cipher initCipher(int mode, SecretKey key) {
+        return DigitalSignatureSolution.getCipher(ECB, mode, key, ENCRYPTION, BLOCK_SIZE);
     }
 
-    public byte[] generateEncryptedByte(Cipher c, String s) {
+    public static byte[] generateEncryptedByte(Cipher c, String s) {
         return generateByte(c, s.getBytes());
     }
 
-    public byte[] generateByte(Cipher c, byte[] b) {
+    public static byte[] generateByte(Cipher c, byte[] b) {
         if (c != null && b != null) {
             //TODO: do encryption, by calling method Cipher.doFinal().
             try {

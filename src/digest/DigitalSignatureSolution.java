@@ -1,6 +1,6 @@
 package src.digest;
 
-import src.rsa.DesSolution;
+import src.rsa.AesSolution;
 import src.rsa.cipher.ByteGen;
 import src.rsa.cipher.CipherGen;
 
@@ -18,16 +18,10 @@ public class DigitalSignatureSolution {
     private static Key publicKey, privateKey;
 
     public static void main(String[] args) {
-
-        StringBuilder sb = DesSolution.initStringFromDir("src/textfile/nonce.txt");
-//        StringBuilder sb2 = DesSolution.initStringFromDir(DesSolution.SHORTTEXT);
-
-        rsaEncrpt(DesSolution.SHORTTEXT, sb);
-//        rsaEncrpt(DesSolution.LONGTEXT, sb2);
     }
 
     private static void rsaEncrpt(String file, StringBuilder sb) {
-        DesSolution desSoln = new DesSolution();
+        AesSolution desSoln = new AesSolution();
 
         DigitalSignatureSolution digSigSoln = new DigitalSignatureSolution();
         digSigSoln.generateRsaKeyPair();
@@ -38,7 +32,7 @@ public class DigitalSignatureSolution {
             System.out.printf("\nLength of %s is %d\n", file, digest.length);
 
             //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as encrypt mode, use PRIVATE key.
-            byte[] encryptedBytesArray = CipherGen.encryptCipher(privateKey, digest);
+            byte[] encryptedBytesArray = CipherGen.encryptCipher(privateKey, digest, 0);
 
             //TODO: encrypt digest message
 //            byte[] encryptedBytesArray = ByteGen.generateByte(rsaCipher, digest);
@@ -48,7 +42,7 @@ public class DigitalSignatureSolution {
             System.out.println(ByteGen.getBase64Format(encryptedBytesArray));
 
             //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as decrypt mode, use PUBLIC key.
-            byte[] decryptedBytesArray = CipherGen.decryptCipher(publicKey, encryptedBytesArray);
+            byte[] decryptedBytesArray = CipherGen.decryptCipher(publicKey, encryptedBytesArray, 0);
 
             //TODO: decrypt message
 //            byte[] decryptedBytesArray = ByteGen.generateByte(rsaCipher, encryptedBytesArray);

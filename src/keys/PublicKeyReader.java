@@ -1,4 +1,4 @@
-package src.keys.ca;
+package src.keys;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
