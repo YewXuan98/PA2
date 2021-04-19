@@ -35,7 +35,7 @@ public class DesSolution {
         StringBuilder text = new StringBuilder();
         String line;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(String.format("%s%s", DIRECTORY, file)));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             while ((line = bufferedReader.readLine()) != null) {
                 text.append("\n").append(line);
             }

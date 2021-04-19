@@ -10,20 +10,20 @@ import java.security.cert.X509Certificate;
 
 public class Client {
 
-    public X509Certificate createCaCert() {
+    public static PublicKey getPublicKey() {
         InputStream fis = null;
         CertificateFactory cf = null;
         try {
             fis = new FileInputStream("CA.crt");
             cf = CertificateFactory.getInstance("X.509");
-            return (X509Certificate) cf.generateCertificate(fis);
+            return cf.generateCertificate(fis).getPublicKey();
         } catch (FileNotFoundException | CertificateException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public PublicKey getPublicKey(X509Certificate caCert){
-        return caCert.getPublicKey();
-    }
+//    public PublicKey getPublicKey(X509Certificate caCert){
+//        return caCert.getPublicKey();
+//    }
 }

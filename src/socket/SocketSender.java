@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class SocketSender {
 
-    private String filename  = "src/textfile/nonce_recv.txt", serverAddress = "localhost";
+    private String filename  = "", serverAddress = "localhost";
     private int port = 4320;
     private long timeStarted;
 

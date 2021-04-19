@@ -8,7 +8,7 @@ import src.socket.SocketSender;
  * Pass nonce to server (step 1)
  */
 
-public class PassNonce {
+public class SendNonce {
 
 	public static void main(String[] args) {
 		//TODO: Generate a nonce on client side and send to server
@@ -25,7 +25,7 @@ public class PassNonce {
 		if (args.length > 2) socketSender.setPort(args[2]);
 		int port = socketSender.getPort();
 
-		socketSender.sendFile(filename);
+		socketSender.sendFile("src/textfile/nonce.txt");
 	}
 
 

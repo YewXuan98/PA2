@@ -1,5 +1,7 @@
 package src.socket;
 
+import src.client.Client;
+import src.rsa.cipher.CipherGen;
 import src.server.ReceiveNonce;
 
 import java.io.BufferedOutputStream;
@@ -8,6 +10,9 @@ import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.PublicKey;
 
 public class SocketReceiver {
 
@@ -73,7 +78,7 @@ public class SocketReceiver {
                     fromClient.readFully(block, 0, numBytes);
 
                     if (numBytes > 0) {
-                        ReceiveNonce.encryptNonce(bufferedFileOutputStream, block, numBytes);
+//                        ReceiveNonce.encryptNonce(bufferedFileOutputStream, block, numBytes);
                     }
 
                     if (numBytes < 117) {

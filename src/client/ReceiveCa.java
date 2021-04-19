@@ -6,14 +6,17 @@ import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.PublicKey;
 
-public class ReceiveEncryptedNonce {
+public class ReceiveCa {
 
     private static int port = 4320;
 
     public static void main(String[] args) {
         if (args.length > 0) port = Integer.parseInt(args[0]);
         establishConnection();
+        PublicKey caKey = Client.getPublicKey(); //public key from CA
+        System.out.println(caKey);
     }
 
     public static void establishConnection() {
@@ -49,8 +52,8 @@ public class ReceiveEncryptedNonce {
                     StringBuilder newOut = new StringBuilder();
                     String out = new String(filename, 0, numBytes);
                     for (int i = 0; i < out.length(); i++) {
-                        if (out.charAt(i) == '_') {
-                            newOut.append("_en");
+                        if (out.charAt(i) == '.') {
+                            newOut.append("_ca");
                         }
                         newOut.append(out.charAt(i));
                     }
@@ -83,5 +86,7 @@ public class ReceiveEncryptedNonce {
             }
         } catch (Exception e) {e.printStackTrace();}
     }
+
+
 
 }

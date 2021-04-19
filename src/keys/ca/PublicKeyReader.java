@@ -1,24 +1,19 @@
 package src.keys.ca;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
-import java.security.spec.*;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 
 public class PublicKeyReader {
 
-    private static final String PUBLIC = "src/keys/public_key.der";
+    public static PublicKey get(String filename) throws Exception {
 
-    public static PublicKey get() {
-        try{
-            byte[] keyBytes = Files.readAllBytes(Paths.get(PUBLIC));
+        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
 
-            X509EncodedKeySpec spec =
-                    new X509EncodedKeySpec(keyBytes);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            return kf.generatePublic(spec);
-        } catch(Exception e){
-            e.printStackTrace();
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return kf.generatePublic(spec);
     }
-        return  null;
-}
 }

@@ -16,7 +16,6 @@ public class RsaGen {
         publicKey = key.generateRsaKeyPair()[0];
         privateKey = key.generateRsaKeyPair()[1];
 
-
     }
 
     public byte[] generateByte(Cipher c, byte[] b) {

@@ -4,7 +4,9 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * Generates cipher
@@ -17,7 +19,7 @@ public class CipherGen {
             RSA = "RSA",
             BLOCK_SIZE = "PKCS1Padding";
 
-    private static Cipher initCipher(int mode, Key key) {
+    public static Cipher initCipher(int mode, Key key) {
         return getCipher(mode, key);
     }
 
@@ -32,17 +34,16 @@ public class CipherGen {
         return null;
     }
 
-    public static String decryptCipher(Key key, byte[] encryptedBytesArray){
+    public static byte[] decryptCipher(Key key, byte[] encryptedBytesArray) {
 
-        Cipher rsaCipher;
         //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as decrypt mode, use PUBLIC key.
-        rsaCipher = CipherGen.initCipher(Cipher.DECRYPT_MODE, key);
+        Cipher rsaCipher = CipherGen.initCipher(Cipher.DECRYPT_MODE, key);
 
         //TODO: decrypt message
         byte[] decryptedBytesArray = ByteGen.generateByte(rsaCipher, encryptedBytesArray);
 
         //TODO: print the decrypted message (in base64format String using Base64), compare with origin digest
-        return ByteGen.getBase64Format(decryptedBytesArray);
+        return decryptedBytesArray;
     }
 
     public static byte[] encryptCipher(Key key, byte[] message) {
@@ -52,4 +53,5 @@ public class CipherGen {
         //TODO: encrypt the message(byte array type)
         return ByteGen.generateByte(rsaCipher, message);
     }
+
 }

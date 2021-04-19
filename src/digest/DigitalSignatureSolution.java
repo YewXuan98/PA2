@@ -1,6 +1,8 @@
 package src.digest;
 
 import src.rsa.DesSolution;
+import src.rsa.cipher.ByteGen;
+import src.rsa.cipher.CipherGen;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -17,11 +19,11 @@ public class DigitalSignatureSolution {
 
     public static void main(String[] args) {
 
-        StringBuilder sb = DesSolution.initStringFromDir(DesSolution.SHORTTEXT);
-        StringBuilder sb2 = DesSolution.initStringFromDir(DesSolution.SHORTTEXT);
+        StringBuilder sb = DesSolution.initStringFromDir("src/textfile/nonce.txt");
+//        StringBuilder sb2 = DesSolution.initStringFromDir(DesSolution.SHORTTEXT);
 
         rsaEncrpt(DesSolution.SHORTTEXT, sb);
-        rsaEncrpt(DesSolution.LONGTEXT, sb2);
+//        rsaEncrpt(DesSolution.LONGTEXT, sb2);
     }
 
     private static void rsaEncrpt(String file, StringBuilder sb) {
@@ -36,24 +38,24 @@ public class DigitalSignatureSolution {
             System.out.printf("\nLength of %s is %d\n", file, digest.length);
 
             //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as encrypt mode, use PRIVATE key.
-            Cipher rsaCipher = digSigSoln.initCipher("ECB", Cipher.ENCRYPT_MODE, privateKey);
+            byte[] encryptedBytesArray = CipherGen.encryptCipher(privateKey, digest);
 
             //TODO: encrypt digest message
-            byte[] encryptedBytesArray = desSoln.generateByte(rsaCipher, digest);
+//            byte[] encryptedBytesArray = ByteGen.generateByte(rsaCipher, digest);
 
             //TODO: print the encrypted message (in base64format String using Base64)
             System.out.println("\nEncrypted message content:");
-            System.out.println(desSoln.getBase64Format(encryptedBytesArray));
+            System.out.println(ByteGen.getBase64Format(encryptedBytesArray));
 
             //TODO: Create RSA("RSA/ECB/PKCS1Padding") cipher object and initialize is as decrypt mode, use PUBLIC key.
-            rsaCipher = digSigSoln.initCipher(DesSolution.ECB, Cipher.DECRYPT_MODE, publicKey);
+            byte[] decryptedBytesArray = CipherGen.decryptCipher(publicKey, encryptedBytesArray);
 
             //TODO: decrypt message
-            byte[] decryptedBytesArray = desSoln.generateByte(rsaCipher, encryptedBytesArray);
+//            byte[] decryptedBytesArray = ByteGen.generateByte(rsaCipher, encryptedBytesArray);
 
             //TODO: print the decrypted message (in base64format String using Base64), compare with origin digest
-            String decryptedMessage = desSoln.getBase64Format(decryptedBytesArray);
-            if (decryptedMessage.equals(desSoln.getBase64Format(digest))) {
+            String decryptedMessage = ByteGen.getBase64Format(decryptedBytesArray);
+            if (decryptedMessage.equals(ByteGen.getBase64Format(digest))) {
                 System.out.printf("\nThe decrypted message length is unchanged\n%s", decryptedMessage);
             }
         }

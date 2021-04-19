@@ -1,4 +1,7 @@
-package src.client;
+package src.server;
+
+import src.io.IO;
+import src.socket.SocketSender;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -7,13 +10,31 @@ import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ReceiveEncryptedNonce {
+public class ReceiveMessageAndSendCa {
 
     private static int port = 4320;
 
     public static void main(String[] args) {
         if (args.length > 0) port = Integer.parseInt(args[0]);
-        establishConnection();
+//        establishConnection();
+
+        String s = IO.fileReader("src/textfile/nonce_en_r.txt").toString();
+        String str = IO.fileReader("src/textfile/nonce_en_r_c.txt").toString();
+
+        if (s.equals(str)) {
+            SocketSender socketSender = new SocketSender();
+
+            if (args.length > 0) socketSender.setFilename(args[0]);
+            String filename = socketSender.getFilename();
+
+            if (args.length > 1) socketSender.setServerAddress(args[1]);
+            String serverAddress = socketSender.getServerAddress();
+
+            if (args.length > 2) socketSender.setPort(args[2]);
+            int port = socketSender.getPort();
+
+            socketSender.sendFile("CA.crt");
+        }
     }
 
     public static void establishConnection() {
@@ -49,8 +70,8 @@ public class ReceiveEncryptedNonce {
                     StringBuilder newOut = new StringBuilder();
                     String out = new String(filename, 0, numBytes);
                     for (int i = 0; i < out.length(); i++) {
-                        if (out.charAt(i) == '_') {
-                            newOut.append("_en");
+                        if (out.charAt(i) == '.') {
+                            newOut.append("_c");
                         }
                         newOut.append(out.charAt(i));
                     }
@@ -59,11 +80,12 @@ public class ReceiveEncryptedNonce {
                     bufferedFileOutputStream = new BufferedOutputStream(fileOutputStream);
 
                     // If the packet is for transferring a chunk of the file
-                } else if (packetType == 1) {
+                } else if (packetType == 1 && bufferedFileOutputStream != null) {
 
                     int numBytes = fromClient.readInt();
                     byte[] block = new byte[numBytes];
                     fromClient.readFully(block, 0, numBytes);
+
 
                     if (numBytes > 0) {
                         bufferedFileOutputStream.write(block, 0, numBytes);
@@ -72,8 +94,8 @@ public class ReceiveEncryptedNonce {
                     if (numBytes < 117) {
                         System.out.println("Closing connection...");
 
-                        if (bufferedFileOutputStream != null) bufferedFileOutputStream.close();
-                        if (bufferedFileOutputStream != null) fileOutputStream.close();
+                        bufferedFileOutputStream.close();
+                        fileOutputStream.close();
                         fromClient.close();
                         toClient.close();
                         connectionSocket.close();

@@ -11,12 +11,8 @@ import java.util.Base64;
 
 public class ByteGen {
 
-    public static byte[] generateEncryptedByte(Cipher c, String s) {
-        return generateByte(c, s.getBytes());
-    }
-
     public static byte[] generateByte(Cipher c, byte[] b) {
-        if (c != null && b != null) {
+        if (c != null) {
             //TODO: do encryption, by calling method Cipher.doFinal().
             try {
                 return c.doFinal(b);
